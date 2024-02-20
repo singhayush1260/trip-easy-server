@@ -2,8 +2,12 @@ import express, { Request, Response } from "express";
 import multer from "multer";
 import cloudinary from "cloudinary";
 import { body } from "express-validator";
-import Hotel, { HotelType } from "../models/Hotel";
+import Hotel from "../models/Hotel";
+import { HotelType } from "../shared-types";
 import verifyToken from "../middleware/auth";
+
+import {getAllMyHotels, getMyHotelById } from "../controllers/myHotelControllers";
+
 const router = express.Router();
 
 const storage = multer.memoryStorage();
@@ -52,32 +56,12 @@ router.post(
   }
 );
 
-router.get("/",verifyToken,async(req:Request, res:Response)=>{
-    console.log('inside get my hotels')
-try{
-    const hotels=await Hotel.find({userId:req.userId});
-    res.json(hotels);
-}
-catch(error){
-    res.status(500).json({message:"Error fetching hotels"})
-}
-})
+router.get("/",verifyToken,getAllMyHotels);
 
 
-router.get("/:id", verifyToken, async (req: Request, res: Response) => {
-    const id = req.params.id.toString();
-    try {
-      const hotel = await Hotel.findOne({
-        _id: id,
-        userId: req.userId,
-      });
-      res.json(hotel);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching hotels" });
-    }
-  });
+router.get("/:id", verifyToken,getMyHotelById);
 
-  router.put("/:hotelId",verifyToken,upload.array("imageFiles"),async (req: Request, res: Response)=>{
+router.put("/:hotelId",verifyToken,upload.array("imageFiles"),async (req: Request, res: Response)=>{
     try{
       const updatedHotel:HotelType=req.body;
       updatedHotel.lastUpdated=new Date();

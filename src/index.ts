@@ -10,6 +10,7 @@ import userRoutes from './routes/userRoutes';
 import authRoutes from './routes/authRoutes';
 import myHotelRoutes from './routes/myHotelRoutes';
 import hotelRoutes from './routes/hotelRoutes';
+import myBookingsRoute from './routes/myBookingRoutes';
 
 const PORT=process.env.PORT || 4000;
 
@@ -21,7 +22,7 @@ cloudinary.config({
 
 connectDB(process.env.MONGODB_URI as string);
 
-console.log("process.env.CLIENT_URL,",process.env.CLIENT_URL)
+
 const app=express();
 app.use(cookieParser());
 app.use(express.json());
@@ -36,6 +37,7 @@ app.use("/api/auth",authRoutes);
 app.use("/api/user",userRoutes);
 app.use("/api/my-hotels",myHotelRoutes);
 app.use("/api/hotels",hotelRoutes);
+app.use("/api/my-bookings",myBookingsRoute);
 
 app.listen(PORT,()=>{
     console.log(`Server started at PORT ${PORT}`);

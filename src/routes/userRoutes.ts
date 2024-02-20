@@ -1,7 +1,11 @@
-import express, {Request, Response} from 'express';
-import { register } from '../controllers/userControllers';
-import { check, validationResult } from "express-validator";
+import express from 'express';
+import { register, currentUser } from '../controllers/userControllers';
+import { check} from "express-validator";
+import verifyToken from '../middleware/auth';
+
 const router=express.Router();
+
+router.get("/me",verifyToken,currentUser);
 
 router.post("/register",[ check("firstName", "First Name is required").isString(),
 check("lastName", "Last Name is required").isString(),
